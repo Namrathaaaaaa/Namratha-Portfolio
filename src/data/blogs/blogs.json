@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "DevOps in 2025: Why Linux, Golang, and AIOps Are the Avengers of the Cloud World",
+    "summary": "Kubernetes, GitOps, and ArgoCD are the new deployment superpowers — the trio redefining how teams ship, secure, and scale cloud-native applications in 2025",
+    "date": "2025-8-3",
+    "readTime": "8 min read",
+    "link": "https://dev.to/namratha_3/devops-in-2025-why-linux-golang-and-aiops-are-the-avengers-of-the-cloud-world-7p6",
+    "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+    "tags": ["Linux", "GoLang", "DevOps", "AIOps"]
+  },
+  {
+    "id": 2,
+    "title": "DevSecOps: Integrating Security into CI/CD Pipelines",
+    "summary": "Exploring best practices for implementing security scanning with SonarQube and Trivy in Jenkins pipelines. Shift-left security testing for containerized applications.",
+    "date": "2025-11-10",
+    "readTime": "6 min read",
+    "link": "https://medium.com/@namratha343",
+    "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+    "tags": ["DevSecOps", "Jenkins", "SonarQube", "Security"]
+  },
+  {
+    "id": 3,
+    "title": "Observability at Scale: Prometheus, Grafana & OpenTelemetry",
+    "summary": "Building comprehensive monitoring and observability stacks for microservices. How we achieved 99.9% uptime with real-time metrics and distributed tracing.",
+    "date": "2025-11-05",
+    "readTime": "10 min read",
+    "link": "https://medium.com/@namratha343",
+    "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "tags": ["Observability", "Prometheus", "Grafana", "Monitoring"]
+  }
+]

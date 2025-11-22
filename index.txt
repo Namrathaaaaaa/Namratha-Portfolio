@@ -1,0 +1,99 @@
+{
+  "name": "Namratha",
+  "contact": {
+    "phone": "+91 6362807044",
+    "email": "namratha343@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/namratha343/",
+    "github": "https://github.com/Namrathaaaaaa"
+  },
+  "experience": [
+    {
+      "role": "DevOps Lead",
+      "start_date": "Sept 2025",
+      "end_date": "present",
+      "organization": "DSCE Bangalore",
+      "highlights": [
+        "Led DevOps for AIML Nexus chatbot platform deployed on Kubernetes + ArgoCD with zero-downtime deployments.",
+        "Architected full CI/CD pipeline with Jenkins + SonarQube + GitHub integration.",
+        "Implemented end-to-end observability with Prometheus, Grafana, OpenTelemetry ensuring 99.9% uptime."
+      ]
+    },
+    {
+      "role": "SDE Intern",
+      "start_date": "Jan 2025",
+      "end_date": "Oct 2025",
+      "organization": "ISRO Bangalore",
+      "highlights": [
+        "Led team of 10 improving Bhuvan national geospatial platform.",
+        "Built multilingual map translation system using PostGIS, vector tiles, PostgreSQL.",
+        "Containerized services with Docker, deployed APIs with Redis caching.",
+        "Optimized system performance for scalable multilingual map services."
+      ]
+    },
+    {
+      "role": "Mentor",
+      "start_date": "Jan 2025",
+      "end_date": "April 2025",
+      "organization": "Polytechnic Internship Mentorship",
+      "location": "Remote",
+      "highlights": [
+        "Mentored 70+ students in MERN full-stack development.",
+        "Led end-to-end student projects with scalable deployment, automation, monitoring."
+      ]
+    }
+  ],
+  "technical_skills": {
+    "programming_languages": ["Go", "Python", "JavaScript", "TypeScript", "C", "C++"],
+    "devops_tools": ["Docker", "Kubernetes", "Jenkins", "GitOps", "Helm", "SonarQube", "Trivy", "DevSecOps", "HashiCorp Vault"],
+    "cloud_infrastructure": ["AWS", "GCP", "Terraform", "Ansible", "Nginx", "Linux (Ubuntu, CentOS)", "Bash/Shell scripting"],
+    "databases_caching": ["MongoDB", "Redis", "RDS", "DynamoDB", "S3"],
+    "observability_tools": ["Prometheus", "Grafana", "Loki", "EFK stack", "OpenTelemetry"]
+  },
+  "projects": [
+    {
+      "name": "Three-Tier Architecture on AWS",
+      "stack": ["Kubernetes", "Jenkins", "ArgoCD", "AWS EKS", "SonarQube", "Trivy", "Prometheus", "Grafana"],
+      "github": "https://github.com/Namrathaaaaaa/3-Tier-Full-Stack",
+      "highlights": [
+        "Deployed 3-tier full-stack app on AWS EKS with CI/CD achieving 90% uptime.",
+        "Implemented DevSecOps (SonarQube, Trivy) and monitoring stack."
+      ]
+    },
+    {
+      "name": "MLOps + DevSecOps Infrastructure Project",
+      "stack": ["Kubernetes", "ArgoCD", "Jenkins", "Docker", "Terraform", "Prometheus", "Grafana", "Chaos Monkey"],
+      "github": "https://github.com/Namrathaaaaaa/mlops-proj",
+      "highlights": [
+        "Managed Kubernetes clusters on personal servers with ArgoCD deployments.",
+        "CI/CD automation with Jenkins and custom DNS routing.",
+        "Implemented chaos testing and observability for resilient infra."
+      ]
+    }
+  ],
+  "education": {
+    "institution": "Dayananda Sagar College of Engineering",
+    "duration": "2022 – 2026",
+    "degree": "B.E in Artificial Intelligence and Machine Learning",
+    "cgpa": 9.83
+  },
+  "achievements": [
+    "Top 6 / 244 teams in Argonyx RV Hackathon; project selected for patenting.",
+    "NPTEL certification in Cloud Computing & Distributed Systems (IIT Kanpur).",
+    "Google Cloud Certified: Cloud Digital Leader.",
+    "Built 10+ projects in DevOps and DevSecOps including CI/CD, Kubernetes, cloud automation, and security."
+  ],
+  "links": {
+    "linkedin": "https://www.linkedin.com/in/namratha343/",
+    "github_main": "https://github.com/Namrathaaaaaa",
+    "github_3tier": "https://github.com/Namrathaaaaaa/3-Tier-Full-Stack",
+    "github_mlops": "https://github.com/Namrathaaaaaa/mlops-proj",
+    "credly_badge": "https://www.credly.com/earner/earned/badge/3e030a80-6842-4208-a7c5-afbeed8373c2"
+  }
+}
+
+
+I want to update the code and I have few changes. I need for now. Remove the community page completely. I do not need that at all. Replace that with projects page so the flow should be on the number. It should be like home projects, blogs, resume ,contact me. There is resume in the folder, but it's not being displayed in the website. Fix all of this and remove the project from the homepage and shifted to a new section and project section as I mentioned before and in the homepage and work experience, you can get all the relevant data from the above Jason data.
+Create the block section. Now I want the cards in the block section should be horizontal. It should have a title 23 lines of description and on the left side manually into the court directly and not as a additional feature. So what I need is, I needed to be in a folder structure where I can visit it and just update it every time along with this, it should have a redirect link to my media account.
+
+
+create a innovative approach to display projects.

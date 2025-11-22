@@ -1,0 +1,18 @@
+INSTRUCTIONS: Add Your Resume PDF Here
+
+1. Rename your resume PDF to: resume.pdf
+2. Place it in this /public folder
+3. Delete this RESUME_INSTRUCTIONS.txt file
+4. The resume will automatically appear on the Resume page
+
+If you don't have a PDF resume yet:
+- Create one using Google Docs, Microsoft Word, or Canva
+- Export as PDF
+- Name it resume.pdf
+- Place it here
+
+The Resume page includes:
+- PDF viewer
+- Zoom in/out controls
+- Fullscreen mode
+- Download button
