@@ -15,7 +15,7 @@ export const personalInfo = {
   linkedin: 'https://www.linkedin.com/in/namratha343/',
   github: 'https://github.com/Namrathaaaaaa',
   twitter: 'https://twitter.com/namratha343',
-  profileImage: '/public/profile.jpg', // Add your image to /public folder
+  profileImage: '/profile.jpg', // Add your image to /public folder
   credlyBadge: 'https://www.credly.com/earner/earned/badge/3e030a80-6842-4208-a7c5-afbeed8373c2',
 }
 
