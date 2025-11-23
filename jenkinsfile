@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'node18'
+    }
+    triggers{
+        githubPush()
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/Namrathaaaaaa/Namratha-Portfolio.git'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm i'
+            }
+        }
+    }
+}
