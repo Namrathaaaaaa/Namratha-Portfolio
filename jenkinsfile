@@ -23,6 +23,11 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        
+        stage('hello'){
+            steps{
+                echo "Hello Rahul"
+            }
+        }
+
     }
 }
