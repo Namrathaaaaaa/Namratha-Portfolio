@@ -1,43 +1,57 @@
 pipeline {
     agent any
+
     tools {
         nodejs 'node18'
     }
-    triggers{
+
+    triggers {
         githubPush()
     }
 
+    environment {
+        IMAGE_NAME = "namratha3/portfolio:v2"
+        EMAIL_TO = "namratha343@gmail.com"
+    }
+
     stages {
+
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/Namrathaaaaaa/Namratha-Portfolio.git'
+                git branch: 'main', 
+                    credentialsId: 'git-cred', 
+                    url: 'https://github.com/Namrathaaaaaa/Namratha-Portfolio.git'
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm i'
             }
         }
-        stage('Run build') {
+
+        stage('Build App') {
             steps {
                 sh 'npm run build'
             }
         }
+
         stage('Docker Login') {
             steps {
                 withCredentials([usernamePassword(
-                credentialsId: 'docker-cred',   
-                usernameVariable: 'DOCKER_USER',
-                passwordVariable: 'DOCKER_PASS'
-            )]) {
-            sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    credentialsId: 'docker-cred',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    env.IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
 
                     sh """
                     docker build -t ${IMAGE_NAME}:latest .
@@ -46,6 +60,7 @@ pipeline {
                 }
             }
         }
+
         stage('Push Docker Image') {
             steps {
                 sh """
@@ -54,56 +69,59 @@ pipeline {
                 """
             }
         }
+
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    sh """
-                    kubectl set image deployment/portfolio-deploy \
-                        portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
-                        -n portfolio
+                sh """
+                kubectl set image deployment/portfolio-deploy \
+                    portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -n portfolio
 
-                    kubectl rollout status deployment/portfolio-deploy -n portfolio
-                    """
-                }
+                kubectl rollout status deployment/portfolio-deploy -n portfolio
+                """
             }
         }
     }
+
     post {
-    success {
-        emailext(
-            attachLog: false,
-            subject: "SUCCESS: Portfolio Deployed Successfully!",
-            body: """
-                Hi Nam, Your Jenkins CI/CD pipeline completed successfully! 🎉
 
-                ✔ Docker image built  
-                ✔ Image pushed to DockerHub  
-                ✔ Kubernetes deployment updated  
-                ✔ Rollout completed  
+        success {
+            emailext(
+                attachLog: false,
+                subject: "SUCCESS: Portfolio Deployed Successfully!",
+                body: """
+Hi Nam,
 
-                Deployed Tag: ${IMAGE_TAG}
+Your Jenkins CI/CD pipeline completed successfully! 🎉
 
-                Good job!
-                """,
-            to: "your@gmail.com"
-        )
-    }
+✔ Docker image built  
+✔ Image pushed to DockerHub  
+✔ Kubernetes deployment updated  
+✔ Rollout completed  
 
-    failure {
-        emailext(
-            attachLog: true,
-            subject: "FAILURE: Portfolio Deployment Failed ❌",
-            body: """
-                Hi Nam, Your CI/CD pipeline FAILED.
+Deployed Tag: ${env.IMAGE_TAG}
 
-                Please check the attached Jenkins build log.
+Good job!
+""",
+                to: "${EMAIL_TO}"
+            )
+        }
 
-                - Jenkins
-                """,
-            to: "your@gmail.com"
-        )
+        failure {
+            emailext(
+                attachLog: true,
+                subject: "FAILURE: Portfolio Deployment Failed ❌",
+                body: """
+Hi Nam,
+
+Your CI/CD pipeline FAILED.
+
+Please check the attached Jenkins build log.
+
+- Jenkins
+""",
+                to: "${EMAIL_TO}"
+            )
+        }
     }
 }
-}
-
-
