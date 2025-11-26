@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "namratha3/portfolio:v2"
+        IMAGE_NAME = "namratha3/portfolio"
         EMAIL_TO = "namratha343@gmail.com"
     }
 
