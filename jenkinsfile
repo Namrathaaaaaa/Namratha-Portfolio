@@ -33,7 +33,76 @@ pipeline {
             sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                 }
             }
-        }  
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+
+                    sh """
+                    docker build -t ${IMAGE_NAME}:latest .
+                    docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                sh """
+                docker push ${IMAGE_NAME}:latest
+                docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                """
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh """
+                    kubectl set image deployment/portfolio-deploy \
+                        portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
+                        -n portfolio
+
+                    kubectl rollout status deployment/portfolio-deploy -n portfolio
+                    """
+                }
+            }
+        }
+    }
+    post {
+    success {
+        emailext(
+            attachLog: false,
+            subject: "SUCCESS: Portfolio Deployed Successfully!",
+            body: """
+                Hi Nam, Your Jenkins CI/CD pipeline completed successfully! 🎉
+
+                ✔ Docker image built  
+                ✔ Image pushed to DockerHub  
+                ✔ Kubernetes deployment updated  
+                ✔ Rollout completed  
+
+                Deployed Tag: ${IMAGE_TAG}
+
+                Good job!
+                """,
+            to: "your@gmail.com"
+        )
+    }
+
+    failure {
+        emailext(
+            attachLog: true,
+            subject: "FAILURE: Portfolio Deployment Failed ❌",
+            body: """
+                Hi Nam, Your CI/CD pipeline FAILED.
+
+                Please check the attached Jenkins build log.
+
+                - Jenkins
+                """,
+            to: "your@gmail.com"
+        )
     }
 }
+
 
