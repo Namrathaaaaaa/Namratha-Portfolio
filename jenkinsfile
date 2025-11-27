@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image (AMD64)') {
+        stage('Build & Push Docker Image (AMD64 + latest tag)') {
             steps {
                 script {
                     env.IMAGE_TAG = sh(
@@ -60,6 +60,7 @@ pipeline {
                     docker buildx create --use || true
                     docker buildx inspect --bootstrap
 
+                    # Build and push latest tag for ArgoCD auto-sync
                     docker buildx build \
                         --platform linux/amd64 \
                         -t ${IMAGE_NAME}:latest \
@@ -69,21 +70,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-
-                sh """
-                kubectl set image deployment/portfolio-deploy \
-                    portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
-                    -n portfolio
-                """
-
-                sh """
-                kubectl rollout status deployment/portfolio-deploy -n portfolio
-                """
-            }
-        }
     }
 
     post {
@@ -91,38 +77,40 @@ pipeline {
         success {
             emailext(
                 attachLog: false,
-                subject: "SUCCESS: Portfolio Deployed Successfully! 🎉",
+                subject: "SUCCESS: Portfolio Image Pushed! 🎉",
                 body: """
 Hi Nam,
 
-Your CI/CD pipeline completed successfully!
+Your Jenkins CI pipeline completed successfully!
 
-✔ Built AMD64 image  
-✔ Pushed to DockerHub  
-✔ Kubernetes deployment updated  
-✔ Rollout finished  
+✔ Built AMD64 Docker image  
+✔ Pushed :latest + commit tag  
+✔ ArgoCD will now automatically deploy it  
 
-Tag deployed: ${env.IMAGE_TAG}
+Tag pushed: ${env.IMAGE_TAG}
 
 Regards,  
 Jenkins 🧡
 """,
-                to: "${EMAIL_TO}"
+                to: EMAIL_TO
             )
         }
 
         failure {
             emailext(
                 attachLog: true,
-                subject: "FAILURE: Portfolio Deployment Failed ❌",
+                subject: "FAILURE: Portfolio Image Build Failed ❌",
                 body: """
 Hi Nam,
-The pipeline failed. Please check Jenkins logs.
+
+Your Jenkins pipeline FAILED.
+
+Please check the logs for details.
 
 Regards,  
 Jenkins
 """,
-                to: "${EMAIL_TO}"
+                to: EMAIL_TO
             )
         }
     }
