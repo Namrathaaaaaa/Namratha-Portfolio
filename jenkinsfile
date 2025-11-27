@@ -12,7 +12,6 @@ pipeline {
     environment {
         IMAGE_NAME = "namratha3/portfolio"
         EMAIL_TO = "namratha343@gmail.com"
-        KUBECONFIG_PATH = "/root/.kube/config"
     }
 
     stages {
@@ -52,7 +51,10 @@ pipeline {
         stage('Build & Push Docker Image (AMD64)') {
             steps {
                 script {
-                    env.IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    env.IMAGE_TAG = sh(
+                        script: "git rev-parse --short HEAD",
+                        returnStdout: true
+                    ).trim()
 
                     sh """
                     docker buildx create --use || true
@@ -71,26 +73,14 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
 
-                echo "Using kubeconfig from: ${KUBECONFIG_PATH}"
-
                 sh """
-                docker run --rm \
-                  -v ${KUBECONFIG_PATH}:/kubeconfig \
-                  -e KUBECONFIG=/kubeconfig \
-                  bitnami/kubectl:latest \
-                  set image deployment/portfolio-deploy \
-                  portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
-                  -n portfolio
+                kubectl set image deployment/portfolio-deploy \
+                    portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -n portfolio
                 """
 
                 sh """
-                docker run --rm \
-                  --user 0:0 \
-                  -v ${KUBECONFIG_PATH}:/kubeconfig \
-                  -e KUBECONFIG=/kubeconfig \
-                  bitnami/kubectl:latest \
-                  rollout status deployment/portfolio-deploy \
-                  -n portfolio
+                kubectl rollout status deployment/portfolio-deploy -n portfolio
                 """
             }
         }
@@ -105,16 +95,16 @@ pipeline {
                 body: """
 Hi Nam,
 
-Your Jenkins CI/CD pipeline completed successfully!
+Your CI/CD pipeline completed successfully!
 
-✔ Built AMD64 Docker image  
+✔ Built AMD64 image  
 ✔ Pushed to DockerHub  
-✔ Updated Kubernetes deployment  
-✔ Rollout completed successfully  
+✔ Kubernetes deployment updated  
+✔ Rollout finished  
 
 Tag deployed: ${env.IMAGE_TAG}
 
-Cheers,  
+Regards,  
 Jenkins 🧡
 """,
                 to: "${EMAIL_TO}"
@@ -127,10 +117,7 @@ Jenkins 🧡
                 subject: "FAILURE: Portfolio Deployment Failed ❌",
                 body: """
 Hi Nam,
-
-Your CI/CD pipeline FAILED.
-
-Please check the Jenkins logs to find the issue.
+The pipeline failed. Please check Jenkins logs.
 
 Regards,  
 Jenkins
