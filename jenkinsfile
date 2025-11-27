@@ -18,15 +18,15 @@ pipeline {
 
         stage('Git Checkout') {
             steps {
-                git branch: 'main', 
-                    credentialsId: 'git-cred', 
+                git branch: 'main',
+                    credentialsId: 'git-cred',
                     url: 'https://github.com/Namrathaaaaaa/Namratha-Portfolio.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm i'
+                sh 'npm install'
             }
         }
 
@@ -48,25 +48,24 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Push Docker Image (AMD64)') {
             steps {
                 script {
                     env.IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
 
                     sh """
-                    docker build -t ${IMAGE_NAME}:latest .
-                    docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${IMAGE_TAG}
+                    # Enable buildx (no error if already exists)
+                    docker buildx create --use || true
+                    docker buildx inspect --bootstrap
+
+                    # Build for AMD64 so Kubernetes can run it
+                    docker buildx build \
+                        --platform linux/amd64 \
+                        -t ${IMAGE_NAME}:latest \
+                        -t ${IMAGE_NAME}:${IMAGE_TAG} \
+                        --push .
                     """
                 }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                sh """
-                docker push ${IMAGE_NAME}:latest
-                docker push ${IMAGE_NAME}:${IMAGE_TAG}
-                """
             }
         }
 
@@ -88,20 +87,20 @@ pipeline {
         success {
             emailext(
                 attachLog: false,
-                subject: "SUCCESS: Portfolio Deployed Successfully!",
+                subject: "SUCCESS: Portfolio Deployed Successfully! 🎉",
                 body: """
 Hi Nam,
 
-Your Jenkins CI/CD pipeline completed successfully! 🎉
+Your Jenkins CI/CD pipeline completed successfully!
 
-✔ Docker image built  
+✔ Image built (AMD64)  
 ✔ Image pushed to DockerHub  
 ✔ Kubernetes deployment updated  
 ✔ Rollout completed  
 
 Deployed Tag: ${env.IMAGE_TAG}
 
-Good job!
+Everything looks good!
 """,
                 to: "${EMAIL_TO}"
             )
@@ -116,9 +115,10 @@ Hi Nam,
 
 Your CI/CD pipeline FAILED.
 
-Please check the attached Jenkins build log.
+Please check the Jenkins build logs for details.
 
-- Jenkins
+Regards,  
+Jenkins
 """,
                 to: "${EMAIL_TO}"
             )
