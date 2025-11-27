@@ -85,6 +85,7 @@ pipeline {
 
                 sh """
                 docker run --rm \
+                  --user 0:0 \
                   -v ${KUBECONFIG_PATH}:/kubeconfig \
                   -e KUBECONFIG=/kubeconfig \
                   bitnami/kubectl:latest \
