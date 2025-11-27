@@ -12,6 +12,7 @@ pipeline {
     environment {
         IMAGE_NAME = "namratha3/portfolio"
         EMAIL_TO = "namratha343@gmail.com"
+        KUBECONFIG_PATH = "/root/.kube/config"
     }
 
     stages {
@@ -70,17 +71,25 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
 
+                echo "Using kubeconfig from: ${KUBECONFIG_PATH}"
+
                 sh """
-                docker run --rm -v /root/.kube:/root/.kube \
-                    bitnami/kubectl:latest \
-                    set image deployment/portfolio-deploy \
-                    portfolio=${IMAGE_NAME}:${IMAGE_TAG} -n portfolio
+                docker run --rm \
+                  -v ${KUBECONFIG_PATH}:/kubeconfig \
+                  -e KUBECONFIG=/kubeconfig \
+                  bitnami/kubectl:latest \
+                  set image deployment/portfolio-deploy \
+                  portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
+                  -n portfolio
                 """
 
                 sh """
-                docker run --rm -v /root/.kube:/root/.kube \
-                    bitnami/kubectl:latest \
-                    rollout status deployment/portfolio-deploy -n portfolio
+                docker run --rm \
+                  -v ${KUBECONFIG_PATH}:/kubeconfig \
+                  -e KUBECONFIG=/kubeconfig \
+                  bitnami/kubectl:latest \
+                  rollout status deployment/portfolio-deploy \
+                  -n portfolio
                 """
             }
         }
@@ -97,14 +106,15 @@ Hi Nam,
 
 Your Jenkins CI/CD pipeline completed successfully!
 
-✔ AMD64 image built  
+✔ Built AMD64 Docker image  
 ✔ Pushed to DockerHub  
-✔ Kubernetes deployment updated  
-✔ Rollout completed  
+✔ Updated Kubernetes deployment  
+✔ Rollout completed successfully  
 
-Tag: ${env.IMAGE_TAG}
+Tag deployed: ${env.IMAGE_TAG}
 
-Everything looks good!
+Cheers,  
+Jenkins 🧡
 """,
                 to: "${EMAIL_TO}"
             )
@@ -119,7 +129,7 @@ Hi Nam,
 
 Your CI/CD pipeline FAILED.
 
-Check the Jenkins logs to find the root cause.
+Please check the Jenkins logs to find the issue.
 
 Regards,  
 Jenkins
