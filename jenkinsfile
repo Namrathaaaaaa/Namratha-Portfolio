@@ -72,15 +72,22 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh """
+                docker run --rm \
+                -v /root/.kube:/root/.kube \
+                bitnami/kubectl:latest \
                 kubectl set image deployment/portfolio-deploy \
-                    portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
-                    -n portfolio
+                portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
+                -n portfolio
+            """
 
+                sh """
+                docker run --rm \
+                -v /root/.kube:/root/.kube \
+                bitnami/kubectl:latest \
                 kubectl rollout status deployment/portfolio-deploy -n portfolio
-                """
-            }
+             """
+             }
         }
-    }
 
     post {
 
