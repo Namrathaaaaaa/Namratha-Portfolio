@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
       - name: portfolio
-        image: namratha3/portfolio:v1
+        image: namratha3/portfolio:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
