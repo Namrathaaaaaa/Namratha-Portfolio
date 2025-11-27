@@ -54,11 +54,9 @@ pipeline {
                     env.IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
 
                     sh """
-                    # Enable buildx (no error if already exists)
                     docker buildx create --use || true
                     docker buildx inspect --bootstrap
 
-                    # Build for AMD64 so Kubernetes can run it
                     docker buildx build \
                         --platform linux/amd64 \
                         -t ${IMAGE_NAME}:latest \
@@ -73,21 +71,23 @@ pipeline {
             steps {
                 sh """
                 docker run --rm \
-                -v /root/.kube:/root/.kube \
-                bitnami/kubectl:latest \
-                kubectl set image deployment/portfolio-deploy \
-                portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
-                -n portfolio
-            """
+                    -v /root/.kube:/root/.kube \
+                    bitnami/kubectl:latest \
+                    kubectl set image deployment/portfolio-deploy \
+                    portfolio=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -n portfolio
+                """
 
                 sh """
                 docker run --rm \
-                -v /root/.kube:/root/.kube \
-                bitnami/kubectl:latest \
-                kubectl rollout status deployment/portfolio-deploy -n portfolio
-             """
-             }
+                    -v /root/.kube:/root/.kube \
+                    bitnami/kubectl:latest \
+                    kubectl rollout status deployment/portfolio-deploy -n portfolio
+                """
+            }
         }
+
+    }  
 
     post {
 
@@ -100,12 +100,12 @@ Hi Nam,
 
 Your Jenkins CI/CD pipeline completed successfully!
 
-✔ Image built (AMD64)  
-✔ Image pushed to DockerHub  
+✔ AMD64 image built  
+✔ Pushed to DockerHub  
 ✔ Kubernetes deployment updated  
 ✔ Rollout completed  
 
-Deployed Tag: ${env.IMAGE_TAG}
+Tag: ${env.IMAGE_TAG}
 
 Everything looks good!
 """,
@@ -120,9 +120,9 @@ Everything looks good!
                 body: """
 Hi Nam,
 
-Your CI/CD pipeline FAILED.
+Your Jenkins CI/CD pipeline FAILED.
 
-Please check the Jenkins build logs for details.
+Check the Jenkins logs to find the root cause.
 
 Regards,  
 Jenkins
@@ -131,4 +131,5 @@ Jenkins
             )
         }
     }
-}
+
+}  
