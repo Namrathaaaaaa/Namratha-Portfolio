@@ -64,7 +64,6 @@ pipeline {
                     # Build and push amd64 image
                     docker buildx build \
                         --platform linux/amd64 \
-                        -t ${IMAGE_NAME}:latest \
                         -t ${IMAGE_NAME}:${IMAGE_TAG} \
                         --push .
                     """
