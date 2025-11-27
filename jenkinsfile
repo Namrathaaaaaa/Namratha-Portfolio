@@ -16,7 +16,7 @@ pipeline {
 
     stages {
 
-        stage('Git Checkout') {
+        stage("Git Checkout") {
             steps {
                 git branch: 'main',
                     credentialsId: 'git-cred',
@@ -24,19 +24,19 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage("Install Dependencies") {
             steps {
-                sh 'npm install'
+                sh "npm install"
             }
         }
 
-        stage('Build App') {
+        stage("Build App") {
             steps {
-                sh 'npm run build'
+                sh "npm run build"
             }
         }
 
-        stage('Docker Login') {
+        stage("Docker Login") {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'docker-cred',
@@ -48,7 +48,7 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image (AMD64 + latest tag)') {
+        stage("Build & Push Docker Image (AMD64 + latest)") {
             steps {
                 script {
                     env.IMAGE_TAG = sh(
@@ -57,10 +57,11 @@ pipeline {
                     ).trim()
 
                     sh """
-                    docker buildx create --use || true
+                    # Ensure a persistent amd64 builder
+                    docker buildx use portfolio-builder || docker buildx create --name portfolio-builder --driver docker-container --use
                     docker buildx inspect --bootstrap
 
-                    # Build and push latest tag for ArgoCD auto-sync
+                    # Build and push amd64 image
                     docker buildx build \
                         --platform linux/amd64 \
                         -t ${IMAGE_NAME}:latest \
@@ -81,16 +82,16 @@ pipeline {
                 body: """
 Hi Nam,
 
-Your Jenkins CI pipeline completed successfully!
+Your Jenkins CI pipeline ran successfully! 🚀
 
-✔ Built AMD64 Docker image  
-✔ Pushed :latest + commit tag  
-✔ ArgoCD will now automatically deploy it  
+✔ App built  
+✔ Docker image (AMD64) built  
+✔ :latest + commit tag pushed to DockerHub  
+✔ ArgoCD will now automatically deploy the new version  
 
 Tag pushed: ${env.IMAGE_TAG}
 
-Regards,  
-Jenkins 🧡
+– Jenkins 🧡
 """,
                 to: EMAIL_TO
             )
@@ -99,16 +100,14 @@ Jenkins 🧡
         failure {
             emailext(
                 attachLog: true,
-                subject: "FAILURE: Portfolio Image Build Failed ❌",
+                subject: "FAILURE: Portfolio Build Failed ❌",
                 body: """
 Hi Nam,
 
-Your Jenkins pipeline FAILED.
+The Jenkins pipeline FAILED.
+Please check the Jenkins logs for details.
 
-Please check the logs for details.
-
-Regards,  
-Jenkins
+– Jenkins
 """,
                 to: EMAIL_TO
             )
