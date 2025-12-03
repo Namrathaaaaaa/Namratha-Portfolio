@@ -72,45 +72,4 @@ pipeline {
             }
         }
     }
-
-    post {
-
-        success {
-            emailext(
-                attachLog: false,
-                subject: "SUCCESS: Portfolio Image Pushed! 🎉",
-                body: """
-Hi Nam,
-
-Your Jenkins CI pipeline ran successfully! 🚀
-
-✔ App built  
-✔ Docker image (AMD64) built  
-✔ :latest + commit tag pushed to DockerHub  
-✔ ArgoCD will now automatically deploy the new version  
-
-Tag pushed: ${env.IMAGE_TAG}
-
-– Jenkins 🧡
-""",
-                to: EMAIL_TO
-            )
-        }
-
-        failure {
-            emailext(
-                attachLog: true,
-                subject: "FAILURE: Portfolio Build Failed ❌",
-                body: """
-Hi Nam,
-
-The Jenkins pipeline FAILED.
-Please check the Jenkins logs for details.
-
-– Jenkins
-""",
-                to: EMAIL_TO
-            )
-        }
-    }
 }
