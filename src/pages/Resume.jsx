@@ -16,12 +16,30 @@ const Resume = () => {
   }
 
   const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = resumeUrl
-    link.download = 'Namratha_Resume.pdf'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    // Try fetching the PDF and triggering a blob download to force save
+    ;(async () => {
+      try {
+        const resp = await fetch(resumeUrl, { cache: 'no-cache' })
+        if (!resp.ok) throw new Error('Network response was not ok')
+        const blob = await resp.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'Namratha_Resume.pdf'
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(url)
+      } catch (err) {
+        // Fallback to simple anchor download (may open in new tab in some browsers)
+        const link = document.createElement('a')
+        link.href = resumeUrl
+        link.download = 'Namratha_Resume.pdf'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
+    })()
   }
 
   const handleFullscreen = () => {
