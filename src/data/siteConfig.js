@@ -56,4 +56,4 @@ export const projects = [
 
 export const blogPosts = blogPostsData
 
-export const resumePath = 'namratha-portfolio-resume.pdf' // Add your resume.pdf to /public folder
+export const resumePath = '/resume.pdf' // Add your resume.pdf to /public folder
