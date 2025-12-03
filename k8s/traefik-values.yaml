@@ -1,0 +1,19 @@
+ports:
+  web:
+    nodePort: 31689
+    port: 80
+    expose: true
+    protocol: TCP
+
+  websecure:
+    nodePort: 32146
+    port: 443
+    expose: true
+    protocol: TCP
+
+service:
+  type: NodePort
+
+providers:
+  kubernetesIngress:
+    enabled: true
