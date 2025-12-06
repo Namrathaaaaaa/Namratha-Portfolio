@@ -1,6 +1,6 @@
 # Namratha's Portfolio 🌸
 
-A beautiful, modern, and responsive personal portfolio website built with React, Tailwind CSS, and Framer Motion. Features a stunning pink-purple gradient theme with smooth animations and a clean, minimalist design.
+A beautiful, modern, and responsive personal portfolio website built with React, Tailwind CSS, and Framer Motion. Features a stunning pink-purple gradient theme with smooth animations and a clean, minimalist design . 
 
 ## Features
 
